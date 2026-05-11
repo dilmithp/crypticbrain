@@ -26,38 +26,45 @@ jobs:
           cd backend
           mvn clean package -DskipTests
 
-      - name: Deploy to EC2
+      - name: Ensure backend directory exists on EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            mkdir -p /home/ubuntu/crypticbrain/backend
+          script: mkdir -p /home/ubuntu/backend
 
-      - name: SCP JAR to Server
+      - name: SCP JAR to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "backend/target/*.jar"
-          target: "/home/ubuntu/crypticbrain/backend/"
+          target: "/home/ubuntu/backend/"
           strip_components: 2
 
-      - name: Restart Backend Service
+      - name: Rename JAR and restart service
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Rename the copied jar to backend.jar
-            mv /home/ubuntu/crypticbrain/backend/*.jar /home/ubuntu/crypticbrain/backend/backend.jar
+            mv /home/ubuntu/backend/*.jar /home/ubuntu/backend/backend.jar
             sudo systemctl restart backend
-            
-            # Health check (Wait up to 30s)
+
+      - name: Health check
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
             echo "Waiting for backend to start..."
             for i in {1..15}; do
-              curl -f http://localhost:8081/api/items && break || sleep 2;
+              curl -sf http://localhost:8081/api/auth/login -o /dev/null && echo "Backend is up!" && exit 0
+              echo "Attempt $i failed, retrying in 5s..."
+              sleep 5
             done
+            echo "Backend health check failed" && exit 1
