@@ -1,26 +1,132 @@
+/* Google Fonts — must come first */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @import "tailwindcss";
 
+/* Tailwind v4: class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Tailwind v4 custom theme tokens */
+@theme {
+  /* Fonts */
+  --font-geist: 'Inter', system-ui, sans-serif;
+  --font-instrument: 'Instrument Serif', Georgia, serif;
+
+  /* Light mode color primitives */
+  --color-bg: #f7f6f2;
+  --color-surface: #ffffff;
+  --color-surface-offset: #f0efe9;
+  --color-border: rgba(0,0,0,0.08);
+  --color-text-primary: #1a1917;
+  --color-text-muted: #6b6a66;
+  --color-text-faint: #a8a7a3;
+  --color-primary: #01696f;
+  --color-primary-hover: #0c4e54;
+  --color-success: #437a22;
+  --color-warning: #d19900;
+  --color-danger: #a12c44;
+  --color-info: #006494;
+
+  /* Custom border radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Custom shadows */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-floating: 0 16px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* Light mode CSS variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --surface-offset: #f0efe9;
+  --border: rgba(0,0,0,0.08);
+  --text-primary: #1a1917;
+  --text-muted: #6b6a66;
+  --text-faint: #a8a7a3;
+  --primary: #01696f;
+  --primary-hover: #0c4e54;
+  --success: #437a22;
+  --warning: #d19900;
+  --danger: #a12c44;
+  --info: #006494;
+  --sidebar-bg: #1a1917;
+  --sidebar-text: #e8e7e4;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Dark mode variables */
+.dark {
+  --bg: #141312;
+  --surface: #1c1b19;
+  --surface-offset: #222120;
+  --border: rgba(255,255,255,0.08);
+  --text-primary: #e8e7e4;
+  --text-muted: #7a7978;
+  --text-faint: #4a4948;
+  --primary: #4f98a3;
+  --primary-hover: #227f8b;
+  --success: #6daa45;
+  --warning: #e8af34;
+  --danger: #dd6974;
+  --info: #5591c7;
+  --sidebar-bg: #0e0d0c;
+  --sidebar-text: #e8e7e4;
+  color-scheme: dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base styles */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-geist);
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+/* Shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, var(--surface-offset) 25%, var(--surface) 50%, var(--surface-offset) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Input shake animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-faint); border-radius: 3px; }
+
+/* Warm grid background for login page */
+.login-bg {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
