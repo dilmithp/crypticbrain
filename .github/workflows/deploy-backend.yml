@@ -65,7 +65,7 @@ jobs:
           script: |
             echo "Waiting for backend to start..."
             for i in {1..15}; do
-              curl -s http://localhost:8181/api-docs -o /dev/null && echo "Backend is up!" && exit 0
+              curl -s http://localhost:8191/api-docs -o /dev/null && echo "Backend is up!" && exit 0
               echo "Attempt $i failed, retrying in 5s..."
               sleep 5
             done
