@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "frontend/.next/standalone/,frontend/.next/static/,frontend/public/"
-          target: "/home/ubuntu/frontend/"
+          target: "/home/ubuntu/crypticbrain/frontend/"
           strip_components: 1
 
       - name: Copy static assets into standalone and restart PM2
