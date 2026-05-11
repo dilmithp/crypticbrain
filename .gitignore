@@ -39,3 +39,4 @@ frontend/coverage/
 # Miscellaneous
 /node_modules/
 /target/
+frontend/.env.production
