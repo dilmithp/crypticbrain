@@ -1,0 +1,41 @@
+# General OS & IDE Files
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Backend (Spring Boot / Maven)
+backend/target/
+backend/pom.xml.tag
+backend/pom.xml.releaseBackup
+backend/pom.xml.versionsBackup
+backend/pom.xml.next
+backend/release.properties
+backend/dependency-reduced-pom.xml
+backend/buildNumber.properties
+backend/.mvn/timing.properties
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/.project
+backend/.classpath
+backend/.settings/
+backend/.springBeans
+backend/*.iml
+
+# Frontend (Next.js / Node)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.vercel/
+frontend/.env*.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/coverage/
+
+# Miscellaneous
+/node_modules/
+/target/
