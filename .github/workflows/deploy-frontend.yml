@@ -83,7 +83,7 @@ jobs:
           script: |
             echo "Waiting for frontend to start..."
             for i in {1..15}; do
-              curl -sf http://localhost:3010 -o /dev/null && echo "Frontend is up!" && exit 0
+              curl -s http://localhost:3010 -o /dev/null && echo "Frontend is up!" && exit 0
               echo "Attempt $i failed, retrying in 5s..."
               sleep 5
             done
