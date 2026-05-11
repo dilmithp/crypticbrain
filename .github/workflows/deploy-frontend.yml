@@ -61,9 +61,11 @@ jobs:
 
             which pm2 || npm install -g pm2
 
-            cp -r /home/ubuntu/crypticbrain/frontend/public /home/ubuntu/crypticbrain/frontend/.next/standalone/public
+            rm -rf /home/ubuntu/crypticbrain/frontend/.next/standalone/public
+            cp -a /home/ubuntu/crypticbrain/frontend/public /home/ubuntu/crypticbrain/frontend/.next/standalone/
             mkdir -p /home/ubuntu/crypticbrain/frontend/.next/standalone/.next
-            cp -r /home/ubuntu/crypticbrain/frontend/.next/static /home/ubuntu/crypticbrain/frontend/.next/standalone/.next/static
+            rm -rf /home/ubuntu/crypticbrain/frontend/.next/standalone/.next/static
+            cp -a /home/ubuntu/crypticbrain/frontend/.next/static /home/ubuntu/crypticbrain/frontend/.next/standalone/.next/
 
             cd /home/ubuntu/crypticbrain/frontend/.next/standalone
 
