@@ -53,7 +53,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             rm -f /home/ubuntu/crypticbrain/backend/backend.jar
-            mv /home/ubuntu/backend/*.jar /home/ubuntu/backend/backend.jar
+            mv /home/ubuntu/crypticbrain/backend/*.jar /home/ubuntu/crypticbrain/backend/backend.jar
             sudo systemctl restart backend
 
       - name: Health check

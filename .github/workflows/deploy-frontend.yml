@@ -28,7 +28,7 @@ jobs:
           npm ci
           npm run build
         env:
-          NEXT_PUBLIC_API_URL: https://api.crypticbrain.dilmith.live
+          NEXT_PUBLIC_API_URL: https://api.crypticbrain.dilmith.live:8191
 
       - name: Ensure frontend directory exists on EC2
         uses: appleboy/ssh-action@v1.0.0
@@ -67,9 +67,9 @@ jobs:
 
             cd /home/ubuntu/crypticbrain/frontend/.next/standalone
 
-            export PORT=3000
+            export PORT=3010
             export HOSTNAME="0.0.0.0"
-            export NEXT_PUBLIC_API_URL=https://api.crypticbrain.dilmith.live
+            export NEXT_PUBLIC_API_URL=https://api.crypticbrain.dilmith.live:8191
 
             pm2 restart frontend || pm2 start server.js --name frontend
             pm2 save
@@ -83,7 +83,7 @@ jobs:
           script: |
             echo "Waiting for frontend to start..."
             for i in {1..15}; do
-              curl -sf http://localhost:3000 -o /dev/null && echo "Frontend is up!" && exit 0
+              curl -sf http://localhost:3010 -o /dev/null && echo "Frontend is up!" && exit 0
               echo "Attempt $i failed, retrying in 5s..."
               sleep 5
             done
