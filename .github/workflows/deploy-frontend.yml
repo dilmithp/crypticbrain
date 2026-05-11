@@ -54,6 +54,12 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            export PATH="$PATH:/usr/local/bin:/usr/bin"
+
+            which pm2 || npm install -g pm2
+
             cp -r /home/ubuntu/frontend/public /home/ubuntu/frontend/.next/standalone/public
             mkdir -p /home/ubuntu/frontend/.next/standalone/.next
             cp -r /home/ubuntu/frontend/.next/static /home/ubuntu/frontend/.next/standalone/.next/static
