@@ -51,7 +51,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            rm -f /home/ubuntu/backend/backend.jar
+            rm -f /home/ubuntu/crypticbrain/backend/backend.jar
             mv /home/ubuntu/backend/*.jar /home/ubuntu/backend/backend.jar
             sudo systemctl restart backend
 

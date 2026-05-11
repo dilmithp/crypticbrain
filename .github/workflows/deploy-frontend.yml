@@ -35,7 +35,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: mkdir -p /home/ubuntu/frontend
+          script: mkdir -p /home/ubuntu/crypticbrain/frontend
 
       - name: SCP standalone build to EC2
         uses: appleboy/scp-action@v0.1.4
@@ -60,11 +60,11 @@ jobs:
 
             which pm2 || npm install -g pm2
 
-            cp -r /home/ubuntu/frontend/public /home/ubuntu/frontend/.next/standalone/public
-            mkdir -p /home/ubuntu/frontend/.next/standalone/.next
-            cp -r /home/ubuntu/frontend/.next/static /home/ubuntu/frontend/.next/standalone/.next/static
+            cp -r /home/ubuntu/crypticbrain/frontend/public /home/ubuntu/crypticbrain/frontend/.next/standalone/public
+            mkdir -p /home/ubuntu/crypticbrain/frontend/.next/standalone/.next
+            cp -r /home/ubuntu/crypticbrain/frontend/.next/static /home/ubuntu/crypticbrain/frontend/.next/standalone/.next/static
 
-            cd /home/ubuntu/frontend/.next/standalone
+            cd /home/ubuntu/crypticbrain/frontend/.next/standalone
 
             export PORT=3000
             export HOSTNAME="0.0.0.0"
