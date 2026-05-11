@@ -26,49 +26,58 @@ jobs:
           cd frontend
           npm ci
           npm run build
+        env:
+          NEXT_PUBLIC_API_URL: https://api.crypticbrain.dilmith.live
 
-      - name: Deploy to EC2
+      - name: Ensure frontend directory exists on EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            mkdir -p /home/ubuntu/crypticbrain/frontend
+          script: mkdir -p /home/ubuntu/frontend
 
-      - name: SCP Frontend Files
+      - name: SCP standalone build to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "frontend/.next/standalone/,frontend/public/,frontend/package.json,frontend/next.config.ts"
-          target: "/home/ubuntu/crypticbrain/frontend/"
+          source: "frontend/.next/standalone/,frontend/.next/static/,frontend/public/"
+          target: "/home/ubuntu/frontend/"
           strip_components: 1
 
-      - name: Restart PM2 Service
+      - name: Copy static assets into standalone and restart PM2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Copy static files to standalone dir
-            cp -r /home/ubuntu/crypticbrain/frontend/public /home/ubuntu/crypticbrain/frontend/.next/standalone/ || true
-            cp -r /home/ubuntu/crypticbrain/frontend/.next/static /home/ubuntu/crypticbrain/frontend/.next/standalone/.next/ || true
-            
-            cd /home/ubuntu/crypticbrain/frontend/.next/standalone
-            
-            export PORT=3010
+            cp -r /home/ubuntu/frontend/public /home/ubuntu/frontend/.next/standalone/public
+            mkdir -p /home/ubuntu/frontend/.next/standalone/.next
+            cp -r /home/ubuntu/frontend/.next/static /home/ubuntu/frontend/.next/standalone/.next/static
+
+            cd /home/ubuntu/frontend/.next/standalone
+
+            export PORT=3000
             export HOSTNAME="0.0.0.0"
-            export NEXT_PUBLIC_API_URL=https://api.crypticbrain.dilmith.live:8191
-            
-            # Use pm2 to restart or start
+            export NEXT_PUBLIC_API_URL=https://api.crypticbrain.dilmith.live
+
             pm2 restart frontend || pm2 start server.js --name frontend
             pm2 save
-            
-            # Health check
+
+      - name: Health check
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
             echo "Waiting for frontend to start..."
             for i in {1..15}; do
-              curl -f http://localhost:3000 && break || sleep 2;
+              curl -sf http://localhost:3000 -o /dev/null && echo "Frontend is up!" && exit 0
+              echo "Attempt $i failed, retrying in 5s..."
+              sleep 5
             done
+            echo "Frontend health check failed" && exit 1
